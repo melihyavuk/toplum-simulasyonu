@@ -3,315 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toplum Harcama Simülasyonu - Dogusan Projesi</title>
+    <title>Toplum Harcama Analiz Platformu v3.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary: #1e40af;
-            --secondary: #10b981;
-            --bg-color: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .container {
-            max-width: 1100px;
-            width: 100%;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 20px;
-        }
-
-        .simulation-grid {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 30px;
-        }
-
-        /* Kontrol Paneli Stilleri */
-        .controls {
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .control-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            color: #475569;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            accent-color: var(--primary);
-            cursor: pointer;
-        }
-
-        .value-badge {
-            float: right;
-            background: var(--primary);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-
-        /* İstatistik Kartları */
-        .stats-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            text-align: center;
-        }
-
-        .stat-card span {
-            display: block;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        /* Butonlar */
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-simulate { background-color: var(--primary); color: white; }
-        .btn-simulate:hover { background-color: #1e3a8a; }
-        .btn-download { background-color: var(--secondary); color: white; }
-        .btn-download:hover { background-color: #059669; }
-
-        #antigravity-label {
-            display: none;
-            color: #d97706;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 10px;
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 850px) {
-            .simulation-grid { grid-template-columns: 1fr; }
-        }
+        :root { --primary: #0f172a; --accent: #3b82f6; --danger: #ef4444; --success: #10b981; --bg: #f8fafc; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding: 20px; line-height: 1.5; }
+        .wrapper { max-width: 1200px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); padding: 40px; }
+        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; }
+        h1 { margin: 0; font-size: 1.8rem; letter-spacing: -0.025em; }
+        .main-grid { display: grid; grid-template-columns: 350px 1fr; gap: 40px; }
+        .control-panel { background: #f1f5f9; padding: 25px; border-radius: 12px; height: fit-content; }
+        .control-group { margin-bottom: 25px; }
+        label { display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #64748b; }
+        input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent); }
+        .val-display { float: right; color: var(--accent); font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center; }
+        .stat-card small { color: #94a3b8; font-size: 0.7rem; font-weight: bold; }
+        .stat-card div { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+        .btn-run { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-bottom: 10px; }
+        .btn-run:hover { background: #1e293b; transform: translateY(-2px); }
+        .btn-export { background: transparent; color: #64748b; border: 1px solid #cbd5e1; width: 100%; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+        .chart-box { background: white; border-radius: 12px; height: 500px; padding: 10px; }
+        .theory-box { grid-column: 1 / -1; margin-top: 30px; padding: 20px; background: #fff7ed; border-left: 4px solid #f97316; border-radius: 4px; font-size: 0.85rem; color: #9a3412; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Toplum Harcama Davranışı Simülasyonu</h1>
-        <p>Ekonomik parametrelerin tüketim üzerindeki etkisini analiz edin.</p>
+<div class="wrapper">
+    <header class="header">
+        <div>
+            <h1>Toplum Harcama Davranışı Projeksiyonu</h1>
+            <span style="color: #64748b; font-size: 0.9rem;">Analitik Veri Modelleme & Simülasyon</span>
+        </div>
+        <div style="text-align: right">
+            <div style="font-size: 0.7rem; font-weight: bold; color: #94a3b8;">SON GÜNCELLEME</div>
+            <div style="font-weight: bold;">13 Mayıs 2026</div>
+        </div>
     </header>
 
-    <div class="simulation-grid">
-        <aside class="controls">
-            <div class="control-group">
-                <label>Gelir Vergisi Oranı <span class="value-badge" id="taxVal">%20</span></label>
-                <input type="range" id="taxRate" min="0" max="50" value="20">
-            </div>
-
-            <div class="control-group">
-                <label>Enflasyon Oranı <span class="value-badge" id="infVal">%15</span></label>
-                <input type="range" id="inflation" min="0" max="100" value="15">
-            </div>
-
-            <div class="control-group">
-                <label>Tüketici Güven Endeksi <span class="value-badge" id="confVal">70</span></label>
-                <input type="range" id="confidence" min="0" max="100" value="70">
-            </div>
-
-            <div class="control-group">
-                <label>Banka Faiz Oranı <span class="value-badge" id="intVal">%10</span></label>
-                <input type="range" id="interest" min="0" max="50" value="10">
-            </div>
-
-            <div class="stats-container">
+    <div class="main-grid">
+        <aside class="control-panel">
+            <div class="stats-grid">
                 <div class="stat-card">
-                    <small>Toplam Harcama</small>
-                    <span id="displaySpend">0₺</span>
+                    <small>TOPLAM HARCAMA</small>
+                    <div id="resHarcama">0₺</div>
                 </div>
                 <div class="stat-card">
-                    <small>Döngü (Ay)</small>
-                    <span id="displayMonth">0</span>
+                    <small>TASARRUF ORANI</small>
+                    <div id="resTasarruf">%0</div>
                 </div>
             </div>
 
-            <div id="antigravity-label">🚀 ANTIGRAVITY MODU AKTİF</div>
-
-            <div class="button-group">
-                <button class="btn-simulate" onclick="nextMonth()">Simüle Et</button>
-                <button class="btn-download" onclick="exportCSV()">CSV İndir</button>
+            <div class="control-group">
+                <label>Maliye Politikası (Vergi) <span id="taxV" class="val-display">%20</span></label>
+                <input type="range" id="tax" min="0" max="60" value="20">
             </div>
+
+            <div class="control-group">
+                <label>Fiyat İstikrarı (Enflasyon) <span id="infV" class="val-display">%15</span></label>
+                <input type="range" id="inf" min="0" max="120" value="15">
+            </div>
+
+            <div class="control-group">
+                <label>Tüketici Beklenti Endeksi <span id="confV" class="val-display">75</span></label>
+                <input type="range" id="conf" min="0" max="100" value="75">
+            </div>
+
+            <div class="control-group">
+                <label>Para Politikası (Faiz) <span id="intV" class="val-display">%10</span></label>
+                <input type="range" id="int" min="0" max="60" value="10">
+            </div>
+
+            <button class="btn-run" onclick="step()">YENİ DÖNEMİ HESAPLA</button>
+            <button class="btn-export" onclick="exportToCSV()">VERİ SETİNİ İNDİR (CSV)</button>
         </aside>
 
-        <main>
+        <main class="chart-box">
             <canvas id="spendingChart"></canvas>
         </main>
+
+        <section class="theory-box">
+            <strong>Akademik Not:</strong> Bu model, <em>Keynesyen Tüketim Fonksiyonu ($C = c_0 + c_1 Y_d$)</em> temel alınarak modernize edilmiştir. Harcama esnekliği; reel faiz oranları ve toplumsal güven endeksi üzerinden zamanlararası ikame (intertemporal substitution) etkisiyle dinamik olarak hesaplanmaktadır.
+        </section>
     </div>
 </div>
 
 <script>
-    // Global Değişkenler ve Veri Seti
-    let historyData = [];
-    let currentMonth = 0;
-    let antigravityActive = false;
+    let simHistory = [];
+    let period = 0;
 
-    // Gerçekçi Toplum Verileri (Segmentasyon)
-    const segments = [
-        { name: "Düşük Gelir", count: 5000, avgIncome: 17002, mpc: 0.95 },
-        { name: "Orta Gelir", count: 3500, avgIncome: 45000, mpc: 0.75 },
-        { name: "Yüksek Gelir", count: 1500, avgIncome: 130000, mpc: 0.45 }
-    ];
-
-    // Grafik Kurulumu
     const ctx = document.getElementById('spendingChart').getContext('2d');
     const chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: [],
             datasets: [{
-                label: 'Aylık Toplam Harcama (Milyon ₺)',
+                label: 'Aylık Tüketim Hacmi (Milyon ₺)',
                 data: [],
-                borderColor: '#1e40af',
-                backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 3,
                 fill: true,
                 tension: 0.4
             }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { display: true } },
-            scales: { y: { beginAtZero: false, title: { display: true, text: 'Milyon ₺' } } }
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: false, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
         }
     });
 
-    // Slider Değerlerini Dinleme
-    const inputs = ['taxRate', 'inflation', 'confidence', 'interest'];
+    const inputs = ['tax', 'inf', 'conf', 'int'];
     inputs.forEach(id => {
-        const el = document.getElementById(id);
-        const valSpan = document.getElementById(id.replace('Rate', '').replace('ion', '').replace('ence', '').replace('est', '') + 'Val');
-        el.oninput = () => {
-            valSpan.innerText = (id === 'confidence' ? '' : '%') + el.value;
+        document.getElementById(id).oninput = function() {
+            document.getElementById(id+'V').innerText = (id==='conf'?'':'%') + this.value;
         };
     });
 
-    // Ana Simülasyon Fonksiyonu
-    function nextMonth() {
-        const tax = antigravityActive ? 0 : document.getElementById('taxRate').value / 100;
-        const inf = antigravityActive ? 0 : document.getElementById('inflation').value / 100;
-        const conf = antigravityActive ? 1.5 : document.getElementById('confidence').value / 100;
-        const intr = antigravityActive ? 0 : document.getElementById('interest').value / 100;
+    function step() {
+        const T = document.getElementById('tax').value / 100;
+        const Pi = document.getElementById('inf').value / 100;
+        const E = document.getElementById('conf').value / 100;
+        const R = document.getElementById('int').value / 100;
 
-        let monthlyTotalSpend = 0;
+        // Toplum Segmentasyonu (Sosyolojik Katmanlar)
+        const segments = [
+            { name: "Segment A", pop: 6000, income: 17002, mpc: 0.96, base: 14000 }, // Temel İhtiyaç Odaklı
+            { name: "Segment B", pop: 3000, income: 55000, mpc: 0.72, base: 22000 }, // Orta Sınıf
+            { name: "Segment C", pop: 1000, income: 180000, mpc: 0.38, base: 45000 } // Tasarruf Odaklı
+        ];
+
+        let totalS = 0;
+        let totalI = 0;
 
         segments.forEach(s => {
-            let disposableIncome = s.avgIncome * (1 - tax);
-            // Formül: Temel Harcama + (Gelir * MPC * Güven) - (Enflasyon ve Faiz Baskısı)
-            let spendPerPerson = (disposableIncome * s.mpc * conf) / (1 + (intr * 0.3) + (inf * 0.1));
+            let Yd = s.income * (1 - T); // Harcanabilir Gelir
             
-            // Antigravity modunda harcama ivmelenir
-            if(antigravityActive) spendPerPerson *= 1.8;
-
-            monthlyTotalSpend += spendPerPerson * s.count;
+            // Hassas Harcama Motoru
+            // Güven (E) arttıkça harcama logaritmik artar.
+            // Enflasyon ve Faiz (Pi, R) harcamayı rasyonel kısıntıya uğratır.
+            let psychFactor = Math.log10(E * 9 + 1); // Güven duyarlılığı
+            let econPressure = 1 + (R * 1.8) + (Pi * 0.4); 
+            
+            let consumption = s.base + (Yd - s.base) * s.mpc * psychFactor / econPressure;
+            
+            // Matematiksel Sınır: Harcama gelirden bağımsız uçamaz (borçlanma limiti)
+            consumption = Math.max(s.base * 0.8, Math.min(consumption, Yd * 1.2));
+            
+            totalS += consumption * s.pop;
+            totalI += s.income * s.pop;
         });
 
-        currentMonth++;
-        const spendInMillions = (monthlyTotalSpend / 1000000).toFixed(2);
+        period++;
+        const mln = (totalS / 1000000).toFixed(2);
+        const saveRate = (((totalI - totalS) / totalI) * 100).toFixed(1);
 
-        // Veri Kaydı
-        historyData.push({
-            ay: currentMonth,
-            harcama: spendInMillions,
-            vergi: tax,
-            enflasyon: inf,
-            guven: conf,
-            faiz: intr
-        });
-
-        // UI Güncelleme
-        document.getElementById('displaySpend').innerText = spendInMillions + "M ₺";
-        document.getElementById('displayMonth').innerText = currentMonth;
-
-        // Grafik Güncelleme
-        chart.data.labels.push("Ay " + currentMonth);
-        chart.data.datasets[0].data.push(spendInMillions);
+        // UI Güncelle
+        document.getElementById('resHarcama').innerText = mln + "M ₺";
+        document.getElementById('resTasarruf').innerText = "%" + (saveRate < 0 ? 0 : saveRate);
+        
+        chart.data.labels.push(period + ". Dönem");
+        chart.data.datasets[0].data.push(mln);
         chart.update();
+
+        simHistory.push({ Dönem: period, Harcama: mln, Vergi: T, Enflasyon: Pi, Guven: E, Faiz: R });
     }
 
-    // ANALİZ İÇİN CSV DIŞA AKTARMA
-    function exportCSV() {
-        if(historyData.length === 0) return alert("Önce simülasyonu ilerletmelisiniz!");
-        
-        let csvContent = "data:text/csv;charset=utf-8,Ay,Harcama(Milyon TL),Vergi Orani,Enflasyon,Guven Endeksi,Faiz Orani\n";
-        
-        historyData.forEach(row => {
-            csvContent += `${row.ay},${row.harcama},${row.vergi},${row.enflasyon},${row.guven},${row.faiz}\n`;
-        });
-
-        const encodedUri = encodeURI(csvContent);
+    function exportToCSV() {
+        if(simHistory.length === 0) return;
+        let csv = "Donem,Harcama_Milyon,Vergi,Enflasyon,Guven,Faiz\n";
+        simHistory.forEach(r => csv += `${r.Dönem},${r.Harcama},${r.Vergi},${r.Enflasyon},${r.Guven},${r.Faiz}\n`);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "toplum_harcama_analizi.csv");
-        document.body.appendChild(link);
+        link.href = URL.createObjectURL(blob);
+        link.download = "toplum_harcama_raporu.csv";
         link.click();
     }
 
-    // SIHIRLI ANTIGRAVITY FONKSIYONU
+    // Antigravity (Level 5 İmza Fonksiyonu)
     window.antigravity = function() {
-        antigravityActive = !antigravityActive;
-        document.getElementById('antigravity-label').style.display = antigravityActive ? 'block' : 'none';
-        console.log("Antigravity modu " + (antigravityActive ? "aktif!" : "devre dışı."));
-        return "Yerçekimi ayarları değiştirildi.";
+        document.getElementById('conf').value = 100;
+        document.getElementById('tax').value = 0;
+        document.getElementById('int').value = 0;
+        inputs.forEach(id => document.getElementById(id).oninput());
+        step();
+        return "Sistem Optimize Edildi: Maksimum Harcama Gücü.";
     };
 
-    // Başlangıçta bir veri noktası oluştur
-    nextMonth();
+    step();
 </script>
 </body>
 </html>
